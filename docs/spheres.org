@@ -1,0 +1,54 @@
+* Ray-Sphere Intersection
+** The Sphere
+#+begin_export latex
+A sphere can be described with a centre $\mathbf{c}$ and radius $r$. The sphere is the locus of points \mathbf{p} where
+\begin{align*}
+|\mathbf{p} - \mathbf{c}| &= r \\
+(\mathbf{p} - \mathbf{c})^2 &= r^2
+\end{align*}
+#+end_export
+
+** Intersection with a Ray
+Using the definition of a point on a [[file:ray.org][ray]] substituted into the formula for a point on the sphere. All vector multiplications below are the dot (scalar) product.
+#+begin_export latex
+\begin{subequations}
+\begin{align}
+\text{let}\;\mathbf{p}  &= \mathbf{o} + t\mathbf{d}      \\
+r^2 &= (\mathbf{p} - \mathbf{c})^2                       \\
+ &= ((\mathbf{o} +t\mathbf{d}) - \mathbf{c})^2           \\
+ &= ((\mathbf{o} - \mathbf{c}) + t\mathbf{d})^2          \\
+ &= (\mathbf{o} - \mathbf{c})^2 + 2(\mathbf{o} - \mathbf{c})\mathbf{d}t + \mathbf{d}^2t^2 \\
+0 &= ((\mathbf{o} - \mathbf{c})^2 - r^2) + 2(\mathbf{o} - \mathbf{c})\mathbf{d} + \mathbf{d}^2t^2
+\end{align}
+\end{subequations}
+Now the equation is in a form which is easy to work with; it is a quadratic of the form
+\begin{align*}
+0 = ax^2 + bx + c,\;x \in \mathbb{R}
+\end{align*}
+Hence the solution is simple, and the second version contains a simple optimisation too
+\begin{subequations}
+\begin{align}
+x &= \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \\
+\text{let}\; d &= \dfrac{b}{2}           \\
+x &= \dfrac{-d \pm \sqrt{d^2 - ac}}{a}   \\
+t &= \dfrac{-(\mathbf{o} - \mathbf{c})\mathbf{d} \pm \sqrt{((\mathbf{o} - \mathbf{c})\mathbf{d})^2 - ((\mathbf{o} - \mathbf{c})^2 - r^2)\mathbf{d}^2}}{\mathbf{d}^2}
+\end{align}
+\end{subequations}
+So, if the discriminant, $\sqrt{d^2 - ac} \ge 0$, then there is at least one intersection.
+If there are two, we only care about the closest, which would mean the minimum value of $t$.
+#+end_export
+So a simple implementation might look like:
+#+begin_src c
+  bool intersect_sphere(ray r, sphere s, float *t) {
+    float oc = v3_sub(r.o, s.c);
+    float a  = v3_dot(r.d, r.d);
+    float hb = v3_dot(oc, d);
+    float c  = v3_dot(oc, oc) - s.r*s.r;
+    float disc = hb*hb - a*c;
+    if (disc < 0) return false;
+    *t = (-hb - disc)/a;
+    if (*t < 0) *t = (-hb + disc)/a; // if r.o is inside the sphere, this matters
+    if (*t < 0) return false; // the sphere is behind the ray
+    return true;
+  }
+#+end_src

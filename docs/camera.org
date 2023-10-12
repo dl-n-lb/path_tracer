@@ -1,0 +1,46 @@
+* Camera Models
+In path tracers, a massive optimisation can be made by producing rays at the camera and tracing them back to a light source, since the vast majority of light emitted by any source will never reach the observer. Doing it this way ensures that all the paths traced are relevant.
+** The Pinhole Camera
+#+latex_header: \usepackage{tikz}
+#+begin_export latex
+\begin{tikzpicture}
+\draw (0,0) -- (8,4)
+\draw (0,4) -- (8,0)
+\draw[color=blue] (2,0) -- (2,4)
+\draw[color=red]  (6,0) -- (6,4)
+\draw[color=yellow, ->] (10,1) -- (2,2.33)
+\draw[color=yellow, ->] (10,2) -- (2,2)
+\draw[color=yellow, ->] (10,3) -- (2,1.67)
+\draw[<-] (2,0) -- (3,0) node[anchor=south]{Focal Length}
+\draw[->] (3,0) -- (4,0)
+\filldraw[black] (4,2) circle (2pt) node[anchor=north]{Pinhole}
+\end{tikzpicture}
+#+end_export
+\\
+The pinhole camera is the simplest to model. It can also be simplified by observing that the red and blue planes above are actually mirror images of each other, hence the red one can be used.
+The focal length of the image is determined by the distance between the pinhole and the image screen.
+The FOV is determined by the angles of the intersecting lines on the image, representing the boundaries of the camera.
+Varying the aperture of the pinhole can create simple DoF blurs.
+*** Calculating Rays
+To get a view ray for a given pixel using a pinhole camera model is quite simple.
+First, the camera needs to be fully defined. This is probably easiest in code:
+#+begin_src c
+  struct camera {
+    vec3 position;       // p
+    vec3 look_direction; // l
+    vec3 up;             // u
+    double vertical_fov; // theta
+    double aspect_ratio; // a (used to obtain horizontal fov from vertical)
+    double focal_length; // f
+  };
+#+end_src
+#+begin_export latex
+let us assume we have the uv of the pixel we wish to cast a ray through, $\mathbf{uv}$.
+If our ray has origin $\mathbf{o}$ and direction $\mathbf{d}$, then:
+\[
+\begin{align*}
+\mathbf{o} &= \mathbf{p} - f\mathbf{l}                              \\
+\mathbf{d} &= \mathbf{p} + 2(v - 0.5)\sin{\theta}\mathbf{u} + 2(u - 0.5)\sin{\theta}a(\mathbf{u} \times \mathbf{l})
+\end{align*}
+\]
+#+end_export

@@ -1,0 +1,8 @@
+* Ray
+A ray consists of an origin and direction only, so is in a naive implementation a pair of 3D Vectors.
+#+begin_export latex
+If we let $\mathbf{o}$ be the origin of a ray, and $\mathbf{d}$ be its direction. A point on the ray can be expressed with:
+\begin{align*}
+\mathbf{r} = \mathbf{o} + t\mathbf{d},\;t \in \mathbb{R}
+\end{align*}
+#+end_export

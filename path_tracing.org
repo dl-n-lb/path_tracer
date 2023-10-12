@@ -1,0 +1,5 @@
+* Path Tracing
+This is a document I am using to describe the mathematical techniques behind the algorithms and hopefully to deepen my understanding of the topic. Some of the content will be wrong, and there may be corrections in other places which aren't referenced, but I will try to keep stuff up-to-date with my code.
+
+** Contents
+- [[file:docs/ray_tracing.org][Ray Tracing]]

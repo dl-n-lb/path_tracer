@@ -1,0 +1,7 @@
+* Ray Tracing
+Ray tracing is the process of tracing rays into a scene, and finding their intersection. In this case, raytracing is the technique we are using to propogate light, with each intersection constituting a point from which light contribution is calculated.
+
+** Contents
+- [[file:ray.org][The Ray]]
+- [[file:camera.org][A Camera]]
+- [[file:spheres.org][Intersecting Spheres]]
